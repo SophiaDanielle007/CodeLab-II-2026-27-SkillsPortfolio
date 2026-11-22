@@ -1,7 +1,15 @@
 from random import randint
 from tkinter import *
+from tkinter import messagebox
+from PIL import ImageTk, Image
 
-def Show_Menu(Frame):
+num_of_questions = 10
+questions_asked = 0
+attempts = 2
+score = 0
+question_scored = False
+
+def displayMenu(Frame):
     Frame.tkraise()
 
 current_frame = None
@@ -10,175 +18,225 @@ def show_frame(frame):
     current_frame = frame
     frame.tkraise()
 
-num_of_questions = 10
-questions_asked = 0
-attempts = 2
+def randomInt():
+    if current_frame is frame_easy:
+        return randint(1, 10), randint(1, 10)
+    elif current_frame is frame_medium:
+        return randint(10, 100), randint(10, 100)
+    elif current_frame is frame_advanced:
+        return randint(1000, 10000), randint(1000, 10000)
 
-def display_Problem():
-    global int1, int2, int3, attempts, questions_asked, mybutton
+# this function decides what operator the question will use
+def decideOperation():
+    # the if statement chooses what operator to use based on what the randint function returns
+    return "+" if randint(1, 2) == 1 else "-"
+
+def displayProblem():
+    global int1, int2, randoperator, attempts, questions_asked, operation, question_scored
 
     if current_frame is frame_easy:
-        int1 = randint(1, 10)
-        int2 = randint(1, 10)
         question_label = easy_question
         answer_entry = easy_entry
         feedback_label = easy_message
+        next_button = easy_next_button
     elif current_frame is frame_medium:
-        int1 = randint(10, 100)
-        int2 = randint(10, 100)
         question_label = medium_question
         answer_entry = medium_entry
         feedback_label = medium_message
+        next_button = medium_next_button
     elif current_frame is frame_advanced:
-        int1 = randint(1000, 10000)
-        int2 = randint(1000, 10000)
         question_label = advanced_question
         answer_entry = advanced_entry
         feedback_label = advanced_message
-    
-    operation = randint(1, 2)
+        next_button = advanced_next_button
 
-    my_questions = {1: f"What is {int1} + {int2}?",
-                    2: f"What is {int1} - {int2}?"}
+# if the user has completed all the questions, the message shows "Quiz Complete" and the text in feedback_label is cleared
+    if questions_asked >= num_of_questions:
+        show_frame(quiz_completed_frame)
+        displayResults()
+        return
 
-    answers = {1: int1 + int2,
-               2: int1 - int2}
-
+    int1, int2 = randomInt()
+    randoperator = decideOperation()
     questions_asked += 1
-    question_label.config(text=f"{questions_asked} of {num_of_questions} Questions\n" f"{my_questions[operation]}")
-    int3 = answers[operation]
+
+    question_label.config(text=f"{questions_asked} of {num_of_questions} Questions\n"f"What is {int1} {randoperator} {int2}?")
+
     answer_entry.delete(0, END)
     attempts = 2
+    question_scored = False
     feedback_label.config(text="")
-    mybutton.config(state=DISABLED)
+    next_button.config(state=DISABLED)
 
-    if questions_asked == num_of_questions:
-        question_label.config(text="Quiz complete!")
-        feedback_label.config(text="")
+def IsCorrect(answer, feedback_label, mybutton):
+    global attempts, score, question_scored
+    # if the selected operator is +, the numbers are added and stored in the int3 var
+    if randoperator == "+":
+        int3 = int1 + int2
+    # if the selected operator is -, the numbers are subtracted and stored in the int3 var
+    elif randoperator == "-":
+        int3 = int1 - int2
 
-def Is_correct(answer, feedback_label, mybutton):
-    global attempts
+# the input is retireved from the entry widget
     a = answer.get().strip()
 
+    # since the retrieved input is a str format, int3 is also converted to a str
     if a == str(int3):
         feedback_label.config(text="Correct! Click Next Question to continue.")
         mybutton.config(state=NORMAL, text="Next Question")
+        # tracks if the current question has already been scored. This prevents points being added again when the user clicks the "Check Answer" again.
+        if not question_scored:
+            if attempts == 2:
+                score += 10
+            else:
+                score += 5
+            question_scored = True
     else:
+        # the attempts var is a counter, if the user attempts again, 1 is subtracted.
         attempts -= 1
         if attempts > 0:
             feedback_label.config(text=f"Wrong. You have {attempts} attempt left.")
+            # the button to move to the next question is disabled until the user completes the question
             mybutton.config(state=DISABLED, text="Complete Question First")
         else:
             feedback_label.config(text=f"No attempts left. The answer was {int3}.")
             mybutton.config(state=NORMAL, text="Next Question")
 
-score = 0
-def display_Results(frame):
-    frame.tkraise()
+def displayResults():
+    score_label.config(text=f"You have scored {score}")
 
+# brings the home_frame to the front and resets everything when the user quits the game
 def Go_Home(HomeFrame):
+    global questions_asked, attempts, score, question_scored
     HomeFrame.tkraise()
+    questions_asked = 0
+    attempts = 2
+    score = 0
+    question_scored = False
+
 
 root = Tk()
 root.title("Math Quiz")
+root.geometry("500x500")
+root.resizable(1, 1)
+root.iconbitmap("asset 2.ico")
 
+# this is the first frame the user sees
 home_frame = Frame(root)
 home_frame.place(relwidth=1 ,relheight=1)
+img = ImageTk.PhotoImage(Image.open("asset 1.webp"))
+home_content = Label(home_frame, image=img, bd=0)
+home_content.place(relwidth=1, relheight=1)
 
-label1 = Label(home_frame, text="Home", font=('Roboto',18))
-label1.pack()
-button1 = Button(home_frame, text="Menu", command=lambda: Show_Menu(Menu_Frame))
-button1.pack()
+label1 = Label(home_content, text="Maths Quiz", font=('Roboto', 18, 'bold'), width=11, bg="#78A9F0", bd=1)
+label1.place(relx=0.5, rely=0.47, anchor=CENTER)
+# this button will bring the Menu_Frame to the front
+button1 = Button(home_content, text="Menu", font=('Roboto', 10), width=20, bg="#D7FF00", command=lambda: displayMenu(Menu_Frame))
+button1.place(relx=0.5, rely=0.53, anchor=CENTER)
 
+# this frame contains the buttons to choose what level of dificulty the user wants
 Menu_Frame = Frame(root)
 Menu_Frame.place(relwidth=1 ,relheight=1)
+menu_content = Frame(Menu_Frame)
+menu_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-label2 = Label(Menu_Frame, text="Choose a level", font=('Roboto',16))
+label2 = Label(menu_content, text="Choose a level", font=('Roboto', 16, 'bold'))
 label2.pack()
 
-frame1 = Frame(Menu_Frame)
-frame1.pack(side=LEFT, expand=YES, fill=X, anchor=N)
-button1 = Button(frame1, text="Easy", command=lambda: [show_frame(frame_easy), display_Problem()])
-button1.pack()
+button1 = Button(menu_content, text="Easy", bg="green", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_easy), displayProblem()])
+button1.pack(pady=5)
 
-frame2= Frame(Menu_Frame)
-frame2.pack(side=LEFT, expand=YES, fill=X, anchor=N)
-button2 = Button(frame2, text="Medium", command=lambda: [show_frame(frame_medium), display_Problem()])
-button2.pack()
+button2 = Button(menu_content, text="Moderate", bg="yellow", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_medium), displayProblem()])
+button2.pack(pady=5)
 
-frame3= Frame(Menu_Frame)
-frame3.pack(side=LEFT, expand=YES, fill=X, anchor=N)
-button3 = Button(frame3, text="Difficult", command=lambda: [show_frame(frame_advanced), display_Problem()])
-button3.pack()
+button3 = Button(menu_content, text="Advanced", bg="red", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_advanced), displayProblem()])
+button3.pack(pady=5)
 
+# this frame shows the easy question
 frame_easy = Frame(root)
 frame_easy.place(relwidth=1 ,relheight=1)
+easy_content = Frame(frame_easy)
+easy_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-easy_question = Label(frame_easy, text="")
-easy_question.pack()
+# this label will display the question
+easy_question = Label(easy_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
+easy_question.pack(fill=X, pady=5)
 
-easy_entry = Entry(frame_easy)
-easy_entry.pack()
+# this is where the user enters their answer
+easy_entry = Entry(easy_content, font=('Roboto', 10), width=20)
+easy_entry.pack(fill=X, pady=5)
 
-easy_check_button = Button(frame_easy, text="Check Answer", command=lambda: Is_correct(easy_entry, easy_message, easy_next_button))
-easy_check_button.pack()
+# this button checks if the answer in easy_entry is right or wrong and displays a message
+easy_check_button = Button(easy_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(easy_entry, easy_message, easy_next_button))
+easy_check_button.pack(fill=X, pady=5)
 
-easy_message = Label(frame_easy, text="")
-easy_message.pack()
+# this label is where the message after the question is checked will be displayed
+easy_message = Label(easy_content, text="", font=('Roboto', 10))
+easy_message.pack(fill=X, pady=5)
 
-easy_next_button = Button(frame_easy, text="Next Question", command=display_Problem, state=DISABLED)
-easy_next_button.pack()
+# this button allows the user to go to the next question, the button remains disabled until the user enters a correct answer or they have run out of attempts
+easy_next_button = Button(easy_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
+easy_next_button.pack(fill=X, pady=5)
 
-goto_home_frame = Button(frame_easy, text="Home", command=lambda: Go_Home(home_frame))
-goto_home_frame.pack()
+# this button allows the user to quit the game at any time
+goto_home_frame = Button(easy_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=5)
 
 frame_medium = Frame(root)
 frame_medium.place(relwidth=1 ,relheight=1)
+medium_content = Frame(frame_medium)
+medium_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-medium_question = Label(frame_medium, text="")
-medium_question.pack()
+medium_question = Label(medium_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
+medium_question.pack(fill=X, pady=5)
 
-medium_entry = Entry(frame_medium)
-medium_entry.pack()
+medium_entry = Entry(medium_content, font=('Roboto', 10), width=20)
+medium_entry.pack(fill=X, pady=5)
 
-medium_check_button = Button(frame_medium, text="Check Answer", command=lambda: Is_correct(medium_entry, medium_message, medium_next_button))
-medium_check_button.pack()
+medium_check_button = Button(medium_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(medium_entry, medium_message, medium_next_button))
+medium_check_button.pack(fill=X, pady=5)
 
-medium_message = Label(frame_medium, text="")
-medium_message.pack()
+medium_message = Label(medium_content, text="", font=('Roboto', 10))
+medium_message.pack(fill=X, pady=5)
 
-medium_next_button = Button(frame_medium, text="Next Question", command=display_Problem, state=DISABLED)
-medium_next_button.pack()
+medium_next_button = Button(medium_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
+medium_next_button.pack(fill=X, pady=5)
 
-goto_home_frame = Button(frame_medium, text="Home", command=lambda: Go_Home(home_frame))
-goto_home_frame.pack()
+goto_home_frame = Button(medium_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=5)
 
 frame_advanced = Frame(root)
 frame_advanced.place(relwidth=1 ,relheight=1)
+advanced_content = Frame(frame_advanced)
+advanced_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-advanced_question = Label(frame_advanced, text="")
-advanced_question.pack()
+advanced_question = Label(advanced_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
+advanced_question.pack(fill=X, pady=5)
 
-advanced_entry = Entry(frame_advanced)
-advanced_entry.pack()
+advanced_entry = Entry(advanced_content, font=('Roboto', 10), width=20)
+advanced_entry.pack(fill=X, pady=5)
 
-advanced_check_button = Button(frame_advanced, text="Check Answer", command=lambda: Is_correct(advanced_entry, advanced_message, advanced_next_button))
-advanced_check_button.pack()
+advanced_check_button = Button(advanced_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(advanced_entry, advanced_message, advanced_next_button))
+advanced_check_button.pack(fill=X, pady=5)
 
-advanced_message = Label(frame_advanced, text="")
-advanced_message.pack()
+advanced_message = Label(advanced_content, text="", font=('Roboto', 10))
+advanced_message.pack(fill=X, pady=5)
 
-advanced_next_button = Button(frame_advanced, text="Next Question", command=display_Problem, state=DISABLED)
-advanced_next_button.pack()
+advanced_next_button = Button(advanced_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
+advanced_next_button.pack(fill=X, pady=5)
 
-goto_home_frame = Button(frame_advanced, text="Home", command=lambda: Go_Home(home_frame))
-goto_home_frame.pack()
+goto_home_frame = Button(advanced_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=5)
 
-results_frame  = Frame(root)
-results_frame.place(relwidth=1, relheight=1)
-
-results = Label(results_frame, text=f"You scored {score} of 100")
-results.pack()
+quiz_completed_frame = Frame(root)
+quiz_completed_frame.place(relwidth=1 ,relheight=1)
+results_content = Frame(quiz_completed_frame)
+results_content.place(relx=0.5, rely=0.5, anchor=CENTER)
+mylabel = Label(results_content, text="Quiz Completed", font=('Roboto', 10))
+mylabel.pack()
+score_label = Label(results_content, text="", font=('Roboto', 10))
+score_label.pack()
+displayResults()
 
 show_frame(home_frame)
 root.mainloop()
