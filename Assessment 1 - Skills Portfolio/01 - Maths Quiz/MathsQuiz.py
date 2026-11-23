@@ -103,7 +103,17 @@ def IsCorrect(answer, feedback_label, mybutton):
             mybutton.config(state=NORMAL, text="Next Question")
 
 def displayResults():
-    score_label.config(text=f"You have scored {score}")
+    if score >= 90:
+        rank = "A"
+    elif score >= 80:
+        rank = "B"
+    elif score >= 70:
+        rank = "C"
+    elif score >= 60:
+        rank = "D"
+    elif score < 50:
+        rank = "E"
+    score_label.config(text=f"You have scored {score}\nYour Rank: '{rank}'")
 
 # brings the home_frame to the front and resets everything when the user quits the game
 def Go_Home(HomeFrame):
@@ -113,6 +123,10 @@ def Go_Home(HomeFrame):
     attempts = 2
     score = 0
     question_scored = False
+
+def play_again():
+    if messagebox.askyesno("Play Again?", "Would you like to play again?", parent=root):
+        Go_Home(Menu_Frame)
 
 
 root = Tk()
@@ -236,6 +250,8 @@ mylabel = Label(results_content, text="Quiz Completed", font=('Roboto', 10))
 mylabel.pack()
 score_label = Label(results_content, text="", font=('Roboto', 10))
 score_label.pack()
+play_again_button = Button(results_content, text="Play Again?", font=('Roboto', 10), width=20, bg="#D7FF00", command=play_again)
+play_again_button.pack(pady=5)
 displayResults()
 
 show_frame(home_frame)
