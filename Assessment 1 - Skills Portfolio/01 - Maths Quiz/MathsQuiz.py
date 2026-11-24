@@ -157,13 +157,13 @@ menu_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 label2 = Label(menu_content, text="Choose a level", font=('Roboto', 16, 'bold'))
 label2.pack()
 
-button1 = Button(menu_content, text="Easy", bg="green", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_easy), displayProblem()])
+button1 = Button(menu_content, text="Easy", bg="green", relief=FLAT, font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_easy), displayProblem()])
 button1.pack(pady=5)
 
-button2 = Button(menu_content, text="Moderate", bg="yellow", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_medium), displayProblem()])
+button2 = Button(menu_content, text="Moderate", bg="yellow", relief=FLAT, font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_medium), displayProblem()])
 button2.pack(pady=5)
 
-button3 = Button(menu_content, text="Advanced", bg="red", font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_advanced), displayProblem()])
+button3 = Button(menu_content, text="Advanced", bg="red", relief=FLAT, font=('Roboto', 10), width=20, command=lambda: [show_frame(frame_advanced), displayProblem()])
 button3.pack(pady=5)
 
 # this frame shows the easy question
