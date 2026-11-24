@@ -39,16 +39,19 @@ def displayProblem():
         answer_entry = easy_entry
         feedback_label = easy_message
         next_button = easy_next_button
+        score_track_label = track_score_easy
     elif current_frame is frame_medium:
         question_label = medium_question
         answer_entry = medium_entry
         feedback_label = medium_message
+        score_track_label = track_score_medium
         next_button = medium_next_button
     elif current_frame is frame_advanced:
         question_label = advanced_question
         answer_entry = advanced_entry
         feedback_label = advanced_message
         next_button = advanced_next_button
+        score_track_label = track_score_advanced
 
 # if the user has completed all the questions, the message shows "Quiz Complete" and the text in feedback_label is cleared
     if questions_asked >= num_of_questions:
@@ -59,7 +62,7 @@ def displayProblem():
     int1, int2 = randomInt()
     randoperator = decideOperation()
     questions_asked += 1
-
+    score_track_label.config(text=f"Current Score: {score}")
     question_label.config(text=f"{questions_asked} of {num_of_questions} Questions\n"f"What is {int1} {randoperator} {int2}?")
 
     answer_entry.delete(0, END)
@@ -172,6 +175,9 @@ frame_easy.place(relwidth=1 ,relheight=1)
 easy_content = Frame(frame_easy)
 easy_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
+track_score_easy = Label(easy_content, text="", font=('Roboto', 10))
+track_score_easy.pack(fill=X, pady=5)
+
 # this label will display the question
 easy_question = Label(easy_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
 easy_question.pack(fill=X, pady=5)
@@ -201,6 +207,9 @@ frame_medium.place(relwidth=1 ,relheight=1)
 medium_content = Frame(frame_medium)
 medium_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
+track_score_medium = Label(medium_content, text="", font=('Roboto', 10))
+track_score_medium.pack(fill=X, pady=5)
+
 medium_question = Label(medium_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
 medium_question.pack(fill=X, pady=5)
 
@@ -223,6 +232,9 @@ frame_advanced = Frame(root)
 frame_advanced.place(relwidth=1 ,relheight=1)
 advanced_content = Frame(frame_advanced)
 advanced_content.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+track_score_advanced = Label(advanced_content, text="", font=('Roboto', 10))
+track_score_easy.pack(fill=X, pady=5)
 
 advanced_question = Label(advanced_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
 advanced_question.pack(fill=X, pady=5)
