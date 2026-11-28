@@ -141,15 +141,28 @@ root.iconbitmap("asset 2.ico")
 # this is the first frame the user sees
 home_frame = Frame(root)
 home_frame.place(relwidth=1 ,relheight=1)
-img = ImageTk.PhotoImage(Image.open("asset 1.webp"))
-home_content = Label(home_frame, image=img, bd=0)
-home_content.place(relwidth=1, relheight=1)
+img1 = ImageTk.PhotoImage(Image.open("asset 1.webp"))
+home_background = Label(home_frame, image=img1, bd=0)
+home_background.place(relwidth=1, relheight=1)
 
-label1 = Label(home_content, text="Maths Quiz", font=('Roboto', 18, 'bold'), width=11, bg="#78A9F0", bd=1)
-label1.place(relx=0.5, rely=0.47, anchor=CENTER)
+home_content = Frame(home_frame, bg="white", highlightbackground="#D9E5F2", highlightthickness=1)
+home_content.place(relx=0.5, rely=0.5, anchor=CENTER, width=370, height=310)
+
+home_accent = Frame(home_content, bg="#4C83E6", height=5)
+home_accent.pack(fill=X)
+
+home_intro = Label(home_content, text="WELCOME TO", font=("Segoe UI", 9, "bold"), fg="#4C83E6", bg="white")
+home_intro.pack(pady=(30, 5))
+
+label1 = Label(home_content, text="Maths Quiz", font=("Segoe UI", 30, "bold"), fg="#18345B", bg="white")
+label1.pack()
+
+label2 = Label(home_content, text="Test your arithmetic skills\nwith a quick quiz.", font=("Segoe UI", 11), fg="#65758B", bg="white", justify=CENTER)
+label2.pack(pady=(8, 24))
+
 # this button will bring the Menu_Frame to the front
-button1 = Button(home_content, text="Menu", font=('Roboto', 10), width=20, bg="#D7FF00", command=lambda: displayMenu(Menu_Frame))
-button1.place(relx=0.5, rely=0.53, anchor=CENTER)
+button1 = Button(home_content, text="START QUIZ", font=("Segoe UI", 11, "bold"), fg="#18345B", bg="#D7FF00", activebackground="#D7FF00", activeforeground="#18345B", relief=FLAT, bd=0, command=lambda: displayMenu(Menu_Frame))
+button1.pack(ipadx=44, ipady=9)
 
 # this frame contains the buttons to choose what level of dificulty the user wants
 Menu_Frame = Frame(root)
@@ -170,89 +183,89 @@ button3 = Button(menu_content, text="Advanced", bg="red", relief=FLAT, font=('Ro
 button3.pack(pady=5)
 
 # this frame shows the easy question
-frame_easy = Frame(root)
-frame_easy.place(relwidth=1 ,relheight=1)
-easy_content = Frame(frame_easy)
+frame_easy = Frame(root, bg="#EAF1FB")
+frame_easy.place(relwidth=1, relheight=1)
+easy_content = Frame(frame_easy, bg="white", padx=28, pady=20, highlightbackground="#D9E5F2", highlightthickness=1)
 easy_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-track_score_easy = Label(easy_content, text="", font=('Roboto', 10))
+track_score_easy = Label(easy_content, text="", font=("Segoe UI", 10, "bold"), fg="#315FC4", bg="white")
 track_score_easy.pack(fill=X, pady=5)
 
 # this label will display the question
-easy_question = Label(easy_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
-easy_question.pack(fill=X, pady=5)
+easy_question = Label(easy_content, text="", font=("Segoe UI", 14, "bold"), fg="#18345B", bg="#EEF4FF", width=28, height=3, wraplength=280, justify=CENTER)
+easy_question.pack(fill=X, pady=7)
 
 # this is where the user enters their answer
-easy_entry = Entry(easy_content, font=('Roboto', 10), width=20)
-easy_entry.pack(fill=X, pady=5)
+easy_entry = Entry(easy_content, font=("Segoe UI", 15), width=24, justify=CENTER, relief=FLAT, highlightthickness=1, highlightbackground="#B8C8DF", highlightcolor="#315FC4")
+easy_entry.pack(fill=X, pady=6, ipady=5)
 
 # this button checks if the answer in easy_entry is right or wrong and displays a message
-easy_check_button = Button(easy_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(easy_entry, easy_message, easy_next_button))
-easy_check_button.pack(fill=X, pady=5)
+easy_check_button = Button(easy_content, text="Check Answer", font=("Segoe UI", 10, "bold"), fg="#18345B", bg="#D7FF00", activebackground="#C4EC00", relief=FLAT, bd=0, command=lambda: IsCorrect(easy_entry, easy_message, easy_next_button))
+easy_check_button.pack(fill=X, pady=5, ipady=6)
 
 # this label is where the message after the question is checked will be displayed
-easy_message = Label(easy_content, text="", font=('Roboto', 10))
-easy_message.pack(fill=X, pady=5)
+easy_message = Label(easy_content, text="", font=("Segoe UI", 10), fg="#52677F", bg="white", height=2, wraplength=280)
+easy_message.pack(fill=X, pady=4)
 
 # this button allows the user to go to the next question, the button remains disabled until the user enters a correct answer or they have run out of attempts
-easy_next_button = Button(easy_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
-easy_next_button.pack(fill=X, pady=5)
+easy_next_button = Button(easy_content, text="Next Question", font=("Segoe UI", 10, "bold"), fg="white", bg="#315FC4", activebackground="#244B9E", disabledforeground="#7B8DA8", relief=FLAT, bd=0, command=displayProblem, state=DISABLED)
+easy_next_button.pack(fill=X, pady=5, ipady=6)
 
 # this button allows the user to quit the game at any time
-goto_home_frame = Button(easy_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
-goto_home_frame.pack(fill=X, pady=5)
+goto_home_frame = Button(easy_content, text="Home", font=("Segoe UI", 10), fg="#9C3D3D", bg="#FCE9E9", activebackground="#F6D6D6", relief=FLAT, bd=0, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=(5, 0), ipady=5)
 
-frame_medium = Frame(root)
-frame_medium.place(relwidth=1 ,relheight=1)
-medium_content = Frame(frame_medium)
+frame_medium = Frame(root, bg="#EAF1FB")
+frame_medium.place(relwidth=1, relheight=1)
+medium_content = Frame(frame_medium, bg="white", padx=28, pady=20, highlightbackground="#D9E5F2", highlightthickness=1)
 medium_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-track_score_medium = Label(medium_content, text="", font=('Roboto', 10))
+track_score_medium = Label(medium_content, text="", font=("Segoe UI", 10, "bold"), fg="#315FC4", bg="white")
 track_score_medium.pack(fill=X, pady=5)
 
-medium_question = Label(medium_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
-medium_question.pack(fill=X, pady=5)
+medium_question = Label(medium_content, text="", font=("Segoe UI", 14, "bold"), fg="#18345B", bg="#EEF4FF", width=28, height=3, wraplength=280, justify=CENTER)
+medium_question.pack(fill=X, pady=7)
 
-medium_entry = Entry(medium_content, font=('Roboto', 10), width=20)
-medium_entry.pack(fill=X, pady=5)
+medium_entry = Entry(medium_content, font=("Segoe UI", 15), width=24, justify=CENTER, relief=FLAT, highlightthickness=1, highlightbackground="#B8C8DF", highlightcolor="#315FC4")
+medium_entry.pack(fill=X, pady=6, ipady=5)
 
-medium_check_button = Button(medium_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(medium_entry, medium_message, medium_next_button))
-medium_check_button.pack(fill=X, pady=5)
+medium_check_button = Button(medium_content, text="Check Answer", font=("Segoe UI", 10, "bold"), fg="#18345B", bg="#D7FF00", activebackground="#C4EC00", relief=FLAT, bd=0, command=lambda: IsCorrect(medium_entry, medium_message, medium_next_button))
+medium_check_button.pack(fill=X, pady=5, ipady=6)
 
-medium_message = Label(medium_content, text="", font=('Roboto', 10))
-medium_message.pack(fill=X, pady=5)
+medium_message = Label(medium_content, text="", font=("Segoe UI", 10), fg="#52677F", bg="white", height=2, wraplength=280)
+medium_message.pack(fill=X, pady=4)
 
-medium_next_button = Button(medium_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
-medium_next_button.pack(fill=X, pady=5)
+medium_next_button = Button(medium_content, text="Next Question", font=("Segoe UI", 10, "bold"), fg="white", bg="#315FC4", activebackground="#244B9E", disabledforeground="#7B8DA8", relief=FLAT, bd=0, command=displayProblem, state=DISABLED)
+medium_next_button.pack(fill=X, pady=5, ipady=6)
 
-goto_home_frame = Button(medium_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
-goto_home_frame.pack(fill=X, pady=5)
+goto_home_frame = Button(medium_content, text="Home", font=("Segoe UI", 10), fg="#9C3D3D", bg="#FCE9E9", activebackground="#F6D6D6", relief=FLAT, bd=0, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=(5, 0), ipady=5)
 
-frame_advanced = Frame(root)
-frame_advanced.place(relwidth=1 ,relheight=1)
-advanced_content = Frame(frame_advanced)
+frame_advanced = Frame(root, bg="#EAF1FB")
+frame_advanced.place(relwidth=1, relheight=1)
+advanced_content = Frame(frame_advanced, bg="white", padx=28, pady=20, highlightbackground="#D9E5F2", highlightthickness=1)
 advanced_content.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-track_score_advanced = Label(advanced_content, text="", font=('Roboto', 10))
-track_score_easy.pack(fill=X, pady=5)
+track_score_advanced = Label(advanced_content, text="", font=("Segoe UI", 10, "bold"), fg="#315FC4", bg="white")
+track_score_advanced.pack(fill=X, pady=5)
 
-advanced_question = Label(advanced_content, text="", font=('Roboto', 10), bg="light grey", width=20, height=3)
-advanced_question.pack(fill=X, pady=5)
+advanced_question = Label(advanced_content, text="", font=("Segoe UI", 14, "bold"), fg="#18345B", bg="#EEF4FF", width=28, height=3, wraplength=280, justify=CENTER)
+advanced_question.pack(fill=X, pady=7)
 
-advanced_entry = Entry(advanced_content, font=('Roboto', 10), width=20)
-advanced_entry.pack(fill=X, pady=5)
+advanced_entry = Entry(advanced_content, font=("Segoe UI", 15), width=24, justify=CENTER, relief=FLAT, highlightthickness=1, highlightbackground="#B8C8DF", highlightcolor="#315FC4")
+advanced_entry.pack(fill=X, pady=6, ipady=5)
 
-advanced_check_button = Button(advanced_content, text="Check Answer", font=('Roboto', 10), bg="#39FF14", width=20, command=lambda: IsCorrect(advanced_entry, advanced_message, advanced_next_button))
-advanced_check_button.pack(fill=X, pady=5)
+advanced_check_button = Button(advanced_content, text="Check Answer", font=("Segoe UI", 10, "bold"), fg="#18345B", bg="#D7FF00", activebackground="#C4EC00", relief=FLAT, bd=0, command=lambda: IsCorrect(advanced_entry, advanced_message, advanced_next_button))
+advanced_check_button.pack(fill=X, pady=5, ipady=6)
 
-advanced_message = Label(advanced_content, text="", font=('Roboto', 10))
-advanced_message.pack(fill=X, pady=5)
+advanced_message = Label(advanced_content, text="", font=("Segoe UI", 10), fg="#52677F", bg="white", height=2, wraplength=280)
+advanced_message.pack(fill=X, pady=4)
 
-advanced_next_button = Button(advanced_content, text="Next Question", font=('Roboto', 10), width=20, command=displayProblem, state=DISABLED)
-advanced_next_button.pack(fill=X, pady=5)
+advanced_next_button = Button(advanced_content, text="Next Question", font=("Segoe UI", 10, "bold"), fg="white", bg="#315FC4", activebackground="#244B9E", disabledforeground="#7B8DA8", relief=FLAT, bd=0, command=displayProblem, state=DISABLED)
+advanced_next_button.pack(fill=X, pady=5, ipady=6)
 
-goto_home_frame = Button(advanced_content, text="Home", font=('Roboto', 10), bg="#FF3131", width=20, command=lambda: Go_Home(home_frame))
-goto_home_frame.pack(fill=X, pady=5)
+goto_home_frame = Button(advanced_content, text="Home", font=("Segoe UI", 10), fg="#9C3D3D", bg="#FCE9E9", activebackground="#F6D6D6", relief=FLAT, bd=0, command=lambda: Go_Home(home_frame))
+goto_home_frame.pack(fill=X, pady=(5, 0), ipady=5)
 
 quiz_completed_frame = Frame(root)
 quiz_completed_frame.place(relwidth=1 ,relheight=1)
